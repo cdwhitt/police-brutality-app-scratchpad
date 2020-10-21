@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react"
 import _ from "lodash"
+import moment from "moment"
 import "./App.css"
 import { Segment, Dropdown, Button, Card, List, Label } from "semantic-ui-react"
 import axios from "axios"
@@ -15,9 +16,10 @@ const stateOptions = _.map(states, (state, index) => ({
 const App = () => {
 	const [stateQuery, setStateQuery] = useState("")
 	const [results, setResults] = useState([])
+
 	const fetchStateData = async () => {
 		const { data } = await axios.get(
-			`https://api.846policebrutality.com/api/incidents?&filter[state]=${stateQuery}`
+			`https://api.846policebrutality.com/api/incidents?filter[state]=${stateQuery}`
 		)
 
 		setResults(data.data)
@@ -45,22 +47,25 @@ const App = () => {
 			tags,
 			title,
 		}) => (
-			<Card>
+			<Card key={id}>
 				<Card.Content>
 					<Card.Header>{title}</Card.Header>
+					<Card.Meta>Date: {date}</Card.Meta>
 					<Card.Meta>Location: {city}</Card.Meta>
 					<Card.Description>
 						Links:
-						{links.map((link) => (
-							<List>
+						{links.map((link, index) => (
+							<List key={index}>
 								<List.Item>
-									<a href={link}>{link.substring(0, 30)}...</a>
+									<a href={link} target="_blank" rel="noopener noreferrer">
+										{link.substring(0, 30)}...
+									</a>
 								</List.Item>
 							</List>
 						))}
 						Tags:
-						{tags.map((tag) => (
-							<List>
+						{tags.map((tag, index) => (
+							<List key={index}>
 								<List.Item>
 									<Label as="a" onClick={() => fetchByTag(tag)}>
 										#{tag}
@@ -73,18 +78,6 @@ const App = () => {
 			</Card>
 		)
 	)
-
-	//city: //String
-	//data: //??
-	//date: //Date String
-	//description: //String?
-	//geocoding: // Object w/ lat: & long:
-	//id: //String
-	//links: //Array of strings
-	//pb_id: //String
-	//state: //String
-	//tags: //Array of strings
-	//title: //String
 
 	return (
 		<>
