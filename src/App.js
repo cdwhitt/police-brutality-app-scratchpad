@@ -3,6 +3,8 @@ import _ from "lodash"
 import moment from "moment"
 import "./App.css"
 import { Segment, Dropdown, Button, Card, List, Label } from "semantic-ui-react"
+import { ReactTinyLink } from "react-tiny-link"
+
 import axios from "axios"
 import * as statesJSON from "./states.json"
 const states = Object.values(statesJSON.default)
@@ -21,7 +23,6 @@ const App = () => {
 		const { data } = await axios.get(
 			`https://api.846policebrutality.com/api/incidents?filter[state]=${stateQuery}`
 		)
-
 		setResults(data.data)
 	}
 
@@ -54,15 +55,22 @@ const App = () => {
 					<Card.Meta>Location: {city}</Card.Meta>
 					<Card.Description>
 						Links:
-						{links.map((link, index) => (
-							<List key={index}>
-								<List.Item>
-									<a href={link} target="_blank" rel="noopener noreferrer">
-										{link.substring(0, 30)}...
-									</a>
-								</List.Item>
-							</List>
-						))}
+						{links &&
+							links.map((link, index) => (
+								<List key={index}>
+									<List.Item>
+										{link.substring(0, 3).includes("http") && (
+											<ReactTinyLink
+												cardSize="small"
+												showGraphic={true}
+												maxLine={2}
+												minLine={1}
+												url={link}
+											/>
+										)}
+									</List.Item>
+								</List>
+							))}
 						Tags:
 						{tags.map((tag, index) => (
 							<List key={index}>
